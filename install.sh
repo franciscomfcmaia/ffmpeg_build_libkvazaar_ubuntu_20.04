@@ -45,14 +45,14 @@ sudo apt-get install libnuma-dev && \
 cd ~/ffmpeg_sources && \
 git -C x265_git pull 2> /dev/null || git clone https://bitbucket.org/multicoreware/x265_git && \
 cd x265_git/build/linux && \
-cmake -G "Unix Makefiles"  ../../source && \
+cmake -G "Unix Makefiles" -DENABLE_SHARED=on  ../../source && \
 make -j$(nproc) && \
 sudo make install
 
 cd ~/ffmpeg_sources && \
 git -C libvpx pull 2> /dev/null || git clone --depth 1 https://chromium.googlesource.com/webm/libvpx.git && \
 cd libvpx && \
-./configure  --disable-examples --disable-unit-tests --enable-vp9-highbitdepth --as=yasm && \
+./configure  --enable-shared --extra-cflags="-fPIC" --disable-examples --disable-unit-tests --enable-vp9-highbitdepth --as=yasm && \
 make -j$(nproc) && \
 sudo make install
 
@@ -60,7 +60,7 @@ cd ~/ffmpeg_sources && \
 git -C fdk-aac pull 2> /dev/null || git clone --depth 1 https://github.com/mstorsjo/fdk-aac && \
 cd fdk-aac && \
 autoreconf -fiv && \
-./configure  && \
+./configure --enable-shared --extra-cflags="-fPIC" && \
 make -j$(nproc) && \
 sudo make install
 
@@ -68,7 +68,7 @@ cd ~/ffmpeg_sources && \
 wget -O lame-3.100.tar.gz https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz && \
 tar xzvf lame-3.100.tar.gz && \
 cd lame-3.100 && \
-./configure  --enable-nasm && \
+./configure  --enable-shared --extra-cflags="-fPIC" --enable-nasm && \
 make -j$(nproc) && \
 sudo make install
 
@@ -76,7 +76,7 @@ cd ~/ffmpeg_sources && \
 git -C opus pull 2> /dev/null || git clone --depth 1 https://github.com/xiph/opus.git && \
 cd opus && \
 ./autogen.sh && \
-./configure  && \
+./configure --enable-shared --extra-cflags="-fPIC"  && \
 make -j$(nproc) && \
 sudo make install
 
@@ -84,7 +84,7 @@ cd ~/ffmpeg_sources && \
 git -C aom pull 2> /dev/null || git clone --depth 1 https://aomedia.googlesource.com/aom && \
 mkdir -p aom_build && \
 cd aom_build && \
-cmake -G "Unix Makefiles" -DENABLE_NASM=on ../aom && \
+cmake -G "Unix Makefiles" -DENABLE_SHARED=on -DCMAKE_POSITION_INDEPENDENT_CODE=on -DENABLE_NASM=on ../aom && \
 make -j$(nproc) && \
 sudo make install
 
@@ -92,7 +92,7 @@ cd ~/ffmpeg_sources && \
 git -C SVT-AV1 pull 2> /dev/null || git clone https://github.com/AOMediaCodec/SVT-AV1.git && \
 mkdir -p SVT-AV1/build && \
 cd SVT-AV1/build && \
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=on -DENABLE_SHARED=on -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
 make -j$(nproc) && \
 sudo make install
 
@@ -101,7 +101,7 @@ cd ~/ffmpeg_sources && \
 git -C kvazaar pull 2> /dev/null || git clone https://github.com/ultravideo/kvazaar.git && \
 cd kvazaar && \
 ./autogen.sh && \
-./configure  && \
+./configure --enable-shared && \
 make -j$(nproc) && \
 sudo make install
 
@@ -114,12 +114,14 @@ tar xjvf ffmpeg-snapshot.tar.bz2 && \
 cd ffmpeg && \
 ./configure \
   --extra-cflags="-I/usr/local/include" \
+  --extra-cflags="-fPIC" \
   --extra-ldflags="-L/usr/local/lib" \
   --extra-libs="-lpthread -lm" \
   --enable-gpl \
   --enable-gnutls \
   --enable-libaom \
   --enable-libass \
+  --enable-shared \
   --enable-libfdk-aac \
   --enable-libfreetype \
   --enable-libmp3lame \
