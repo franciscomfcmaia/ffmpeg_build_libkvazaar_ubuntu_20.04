@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 sudo apt-get -y install libunistring-dev
 
 sudo apt-get update -qq && sudo apt-get -y install \
