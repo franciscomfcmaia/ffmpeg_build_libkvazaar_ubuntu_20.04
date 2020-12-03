@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 sudo apt-get -y install libunistring-dev
 
 sudo apt-get update -qq && sudo apt-get -y install \
@@ -61,7 +60,7 @@ cd ~/ffmpeg_sources && \
 git -C fdk-aac pull 2> /dev/null || git clone --depth 1 https://github.com/mstorsjo/fdk-aac && \
 cd fdk-aac && \
 autoreconf -fiv && \
-./configure --enable-shared --extra-cflags="-fPIC" && \
+./configure --prefix=/usr --disable-static && \
 make -j$(nproc) && \
 sudo make install
 
@@ -69,7 +68,7 @@ cd ~/ffmpeg_sources && \
 wget -O lame-3.100.tar.gz https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz && \
 tar xzvf lame-3.100.tar.gz && \
 cd lame-3.100 && \
-./configure  --enable-shared --extra-cflags="-fPIC" --enable-nasm && \
+./configure --enable-nasm && \
 make -j$(nproc) && \
 sudo make install
 
@@ -77,7 +76,7 @@ cd ~/ffmpeg_sources && \
 git -C opus pull 2> /dev/null || git clone --depth 1 https://github.com/xiph/opus.git && \
 cd opus && \
 ./autogen.sh && \
-./configure --enable-shared --extra-cflags="-fPIC"  && \
+./configure  && \
 make -j$(nproc) && \
 sudo make install
 
